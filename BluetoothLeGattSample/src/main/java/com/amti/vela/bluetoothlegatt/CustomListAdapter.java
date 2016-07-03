@@ -1,4 +1,4 @@
-package com.example.android.bluetoothlegatt;
+package com.amti.vela.bluetoothlegatt;
 
 import android.content.ClipData;
 import android.content.Context;
@@ -28,7 +28,7 @@ public class CustomListAdapter extends ArrayAdapter<ClipData.Item> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.custom_list_item, null);
+            v = vi.inflate(R.layout.custom_listview_item, null);
         }
 
         ClipData.Item p = getItem(position);
@@ -37,8 +37,8 @@ public class CustomListAdapter extends ArrayAdapter<ClipData.Item> {
             TextView text = (TextView)v.findViewById(R.id.list_item_text);
             TextView subtext = (TextView)v.findViewById(R.id.list_item_subtext);
 
+            //split text and subtext by the newline character
             String textSplit[] = p.getText().toString().split("\n");
-
 
             if (text != null) {
                 text.setText(textSplit[0]);

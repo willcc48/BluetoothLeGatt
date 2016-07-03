@@ -18,14 +18,5 @@
 
 
 <resources>
-    <string name="app_name">BLEScanner</string>
-    <string name="intro_message">
-        <![CDATA[
-        
-            
-            Scan for sample BLE Peripheral
-            
-        
-        ]]>
-    </string>
+    <string name="app_name">Vela</string>
 </resources>
