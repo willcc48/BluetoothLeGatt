@@ -6,6 +6,12 @@
         <option name="GRADLE_PROJECT_PATH" value=":BluetoothLeGattSample" />
       </configuration>
     </facet>
+    <facet type="java-gradle" name="Java-Gradle">
+      <configuration>
+        <option name="BUILD_FOLDER_PATH" value="$MODULE_DIR$/build" />
+        <option name="BUILDABLE" value="false" />
+      </configuration>
+    </facet>
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="debug" />
@@ -57,12 +63,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/menu_device_search/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/common/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/template/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/assets" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/aidl" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/menu_device_search/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/common/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/template/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/jni" isTestSource="false" />
@@ -90,6 +98,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/design/23.1.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
@@ -107,9 +117,11 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.1.1" level="project" />
-    <orderEntry type="module" module-name="colorpickerlibary" exported="" />
+    <orderEntry type="library" exported="" name="design-23.1.1" level="project" />
+    <orderEntry type="module" module-name="ColorPickerLibary" exported="" />
   </component>
 </module>

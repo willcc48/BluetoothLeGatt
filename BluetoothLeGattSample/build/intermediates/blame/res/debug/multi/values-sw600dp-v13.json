@@ -140,8 +140,141 @@
                     "startLine": 9,
                     "startColumn": 4,
                     "startOffset": 542,
+                    "endColumn": 69,
+                    "endOffset": 607
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 227,
+                        "endColumn": 69,
+                        "endOffset": 292
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 612,
+                    "endColumn": 70,
+                    "endOffset": 678
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 297,
+                        "endColumn": 70,
+                        "endOffset": 363
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 683,
+                    "endColumn": 71,
+                    "endOffset": 750
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 368,
+                        "endColumn": 71,
+                        "endOffset": 435
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 755,
+                    "endColumn": 57,
+                    "endOffset": 808
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 7,
+                        "startColumn": 4,
+                        "startOffset": 440,
+                        "endColumn": 57,
+                        "endOffset": 493
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 813,
+                    "endColumn": 57,
+                    "endOffset": 866
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 498,
+                        "endColumn": 57,
+                        "endOffset": 551
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 871,
+                    "endColumn": 105,
+                    "endOffset": 972
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 9,
+                        "startColumn": 4,
+                        "startOffset": 556,
+                        "endColumn": 105,
+                        "endOffset": 657
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 977,
+                    "endColumn": 63,
+                    "endOffset": 1036
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 662,
+                        "endColumn": 63,
+                        "endOffset": 721
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 1041,
                     "endColumn": 67,
-                    "endOffset": 605
+                    "endOffset": 1104
                 },
                 "from": {
                     "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\values-sw600dp\\template-dimens.xml",
@@ -156,11 +289,11 @@
             },
             {
                 "to": {
-                    "startLine": 10,
+                    "startLine": 17,
                     "startColumn": 4,
-                    "startOffset": 610,
+                    "startOffset": 1109,
                     "endColumn": 67,
-                    "endOffset": 673
+                    "endOffset": 1172
                 },
                 "from": {
                     "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\values-sw600dp\\template-dimens.xml",
@@ -175,11 +308,11 @@
             },
             {
                 "to": {
-                    "startLine": 11,
+                    "startLine": 18,
                     "startColumn": 4,
-                    "startOffset": 678,
+                    "startOffset": 1177,
                     "endColumn": 54,
-                    "endOffset": 728
+                    "endOffset": 1227
                 },
                 "from": {
                     "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
@@ -194,12 +327,52 @@
             },
             {
                 "to": {
-                    "startLine": 12,
+                    "startLine": 19,
                     "startColumn": 4,
-                    "startOffset": 733,
-                    "endLine": 16,
+                    "startOffset": 1232,
+                    "endColumn": 62,
+                    "endOffset": 1290
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 898,
+                        "endColumn": 62,
+                        "endOffset": 956
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 20,
+                    "startColumn": 4,
+                    "startOffset": 1295,
+                    "endLine": 23,
                     "endColumn": 12,
-                    "endOffset": 973
+                    "endOffset": 1472
+                },
+                "from": {
+                    "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\values-sw600dp\\values-sw600dp.xml",
+                    "position": {
+                        "startLine": 16,
+                        "startColumn": 4,
+                        "startOffset": 1133,
+                        "endLine": 19,
+                        "endColumn": 12,
+                        "endOffset": 1310
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 24,
+                    "startColumn": 4,
+                    "startOffset": 1477,
+                    "endLine": 28,
+                    "endColumn": 12,
+                    "endOffset": 1717
                 },
                 "from": {
                     "file": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\values-sw600dp\\template-styles.xml",

@@ -1,18 +1,14 @@
 [
     {
-        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_action_bluetooth.png",
-        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-mdpi\\ic_action_bluetooth.png"
-    },
-    {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_launcher.png",
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_action_bluetooth_connected.png",
-        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-mdpi\\ic_action_bluetooth_connected.png"
+        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_bluetooth_searching.png",
+        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-mdpi\\ic_bluetooth_searching.png"
     },
     {
-        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_action_send.png",
-        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-mdpi\\ic_action_send.png"
+        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_bluetooth_connected.png",
+        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-mdpi\\ic_bluetooth_connected.png"
     }
 ]
