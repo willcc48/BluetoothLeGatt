@@ -41,11 +41,11 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="Vela"
+        android:label="Vela SmartNecklace"
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.amti.vela.bluetoothlegatt.bluetooth.DeviceScanActivity"
-            android:label="Vela Interface"
+            android:label="Vela SmartNecklace"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,8 +56,11 @@
         <activity
             android:name="com.amti.vela.bluetoothlegatt.MainActivity"
             android:label="Color Selection"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.amti.vela.bluetoothlegatt.SettingsActivity"
+            android:label="Settings"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.amti.vela.bluetoothlegatt.bluetooth.BluetoothLeService"

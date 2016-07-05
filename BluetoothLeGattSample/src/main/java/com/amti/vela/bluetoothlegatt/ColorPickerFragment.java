@@ -19,8 +19,12 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
 
     public static final int SEND_COLOR_VALUES = 0;
 
+    ColorPicker mColorPicker;
+    RelativeLayout relativeLayout;
+    SaturationBar mSaturationBar;
+    ValueBar mValueBar;
+
     private final static int kFirstTimeColor = 0x0000ff;
-    private ColorPicker mColorPicker;
     private int mSelectedColor;
     private int mPrevSelectedColor;
     int r, g, b;
@@ -34,9 +38,6 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
 
         @Override
         public void run() {
-            // Set the old color
-            mColorPicker.setOldCenterColor(mPrevSelectedColor);
-
             Message msg = btHandler.obtainMessage(SEND_COLOR_VALUES);
             btHandler.sendMessage(msg);
         }
@@ -53,9 +54,9 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
 
     RelativeLayout initGui(LayoutInflater inflater, ViewGroup container)
     {
-        RelativeLayout relativeLayout = (RelativeLayout)inflater.inflate(R.layout.fragment_color_picker, container, false);
-        SaturationBar mSaturationBar = (SaturationBar) relativeLayout.findViewById(R.id.saturationbar);
-        ValueBar mValueBar = (ValueBar) relativeLayout.findViewById(R.id.valuebar);
+        relativeLayout = (RelativeLayout)inflater.inflate(R.layout.fragment_color_picker, container, false);
+        mSaturationBar = (SaturationBar) relativeLayout.findViewById(R.id.saturationbar);
+        mValueBar = (ValueBar) relativeLayout.findViewById(R.id.valuebar);
         mColorPicker = (ColorPicker) relativeLayout.findViewById(R.id.colorPicker);
         mColorPicker.addSaturationBar(mSaturationBar);
         mColorPicker.addValueBar(mValueBar);
@@ -94,6 +95,13 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
         return redString + greenString + blueString;
     }
 
+    public void initColors(int color)
+    {
+        mColorPicker.setColor(color);
+        mSaturationBar.setColor(color);
+        mValueBar.setColor(color);
+    }
+
     @Override
     public void onColorChanged(int color) {
         // Save selected color
@@ -111,9 +119,9 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
             sendHandler.removeCallbacksAndMessages(sendTimerRunnable);
             sendHandler.postDelayed(sendTimerRunnable, 500);
         }
-        else if (event.getAction() == MotionEvent.ACTION_DOWN && v.getId() == R.id.colorPicker)
+        else if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            mPrevSelectedColor = mSelectedColor;
+            mColorPicker.setOldCenterColor(mSelectedColor);
         }
         return false;
     }

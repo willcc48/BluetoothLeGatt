@@ -10,14 +10,14 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/BluetoothLeGattSample" />
-            <option value="$PROJECT_DIR$/colorpickerlibary" />
+            <option value="$PROJECT_DIR$/ColorPickerLibary" />
           </set>
         </option>
         <option name="myModules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/BluetoothLeGattSample" />
-            <option value="$PROJECT_DIR$/colorpickerlibary" />
+            <option value="$PROJECT_DIR$/ColorPickerLibary" />
           </set>
         </option>
       </GradleProjectSettings>

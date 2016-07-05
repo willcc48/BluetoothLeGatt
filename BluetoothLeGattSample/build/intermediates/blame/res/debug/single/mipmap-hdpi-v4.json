@@ -1,5 +1,9 @@
 [
     {
+        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_edit.png",
+        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-hdpi\\ic_edit.png"
+    },
+    {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_bluetooth_searching.png",
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-hdpi\\ic_bluetooth_searching.png"
     },
@@ -10,5 +14,9 @@
     {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_bluetooth_connected.png",
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-hdpi\\ic_bluetooth_connected.png"
+    },
+    {
+        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_color_palette.png",
+        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-hdpi\\ic_color_palette.png"
     }
 ]

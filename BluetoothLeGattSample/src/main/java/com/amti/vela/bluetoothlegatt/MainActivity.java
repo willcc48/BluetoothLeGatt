@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.amti.vela.bluetoothlegatt;
 
 import android.app.AlertDialog;
@@ -27,11 +11,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -45,6 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -63,23 +51,68 @@ import com.amti.vela.bluetoothlegatt.bluetooth.BluetoothLeService;
 public class MainActivity extends AppCompatActivity implements DialogInterface.OnCancelListener {
     private final static String TAG = MainActivity.class.getSimpleName();
 
-    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-    public static final String ANALOG_ANALOG_OUT_UUID = "866ad1ee-05c4-4f4e-9ef4-548790668ad1";
+    public static final String EXTRAS_DEVICE = "DEVICE";
+    public static final String ANALOG_OUT_UUID = "866ad1ee-05c4-4f4e-9ef4-548790668ad1";
+    public static final String VBAT_UUID = "982754c4-fbde-4d57-a01b-6c81f2f0499e";
 
-    private String mDeviceAddress;
+    private String mDeviceAddress = "Unknown Address";
+    String mDeviceName = "Unknown Device";
     private BluetoothLeService mBluetoothLeService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
-    public BluetoothGattCharacteristic myCharacteristic;
+    public BluetoothGattCharacteristic colorCharacteristic;
+    public BluetoothGattCharacteristic vbatCharacteristic;
 
     ProgressDialog connectingDialog;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
-
+    DeviceFragment deviceFragment;
     ColorPickerFragment colorPickerFragment;
+    boolean initColors = true;
+
+    int[] mVbatArray = new int[6];
+
+    AlertDialog.Builder notificationEnableDialog;
+    AlertDialog.Builder saveAutoConnectDialog;
+    boolean mNeverAskChecked;
+
+    boolean mAutoConnecting;
+    boolean mNeverAsking;
+
+    DialogInterface.OnClickListener notificationDialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(MainActivity.this, "Some parts of this app will be disabled. You can manually enable this in the settings app under Notifications -> Notifiation Access", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
+
+    DialogInterface.OnClickListener saveAutoConnectListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    prefs.edit().putBoolean(Preferences.PREFS_AUTO_CONNECT_KEY, true).apply();
+                    prefs.edit().putString(Preferences.PREFS_DEVICE_KEY, mDeviceName + "\n" + mDeviceAddress).apply();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    prefs.edit().putBoolean(Preferences.PREFS_NEVER_ASK_KEY, mNeverAskChecked).apply();
+                    break;
+            }
+        }
+    };
 
     Handler mHandler = new Handler() {
         @Override
@@ -88,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             super.handleMessage(msg);
             switch (msg.what) {
                 case ColorPickerFragment.SEND_COLOR_VALUES:
-                    mBluetoothLeService.writeCharacteristic(myCharacteristic, colorPickerFragment.getColorString());
+                    mBluetoothLeService.writeCharacteristic(colorCharacteristic, colorPickerFragment.getColorString());
                     Log.v(TAG, "Wrote rgb values");
                     break;
             }
@@ -119,51 +152,65 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         public void run() {
             try
             {
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"V" );
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"V" );
                 Thread.sleep(500);
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"v" );
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"v" );
                 Thread.sleep(500);
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"V" );
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"V" );
                 Thread.sleep(500);
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"v" );
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"v" );
                 Thread.sleep(500);
                 /*
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"255000000" );
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"255000000" );
                 Thread.sleep(500);
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"000000000");
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"000000000");
                 Thread.sleep(500);
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"255000000");
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"255000000");
                 Thread.sleep(500);
-                mBluetoothLeService.writeCharacteristic(myCharacteristic,"000000000" );
+                mBluetoothLeService.writeCharacteristic(colorCharacteristic,"000000000" );
                 Thread.sleep(500);
                 */
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.d(TAG, "Caught InterruptedException while attempting to start notification listener thread");
             }
         }
     };
 
-
-    Handler reconnectHandler = new Handler();
-    Runnable reconnectRunnable = new Runnable() {
+    Runnable connectRunnable = new Runnable() {
 
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "Device reconnect timed out", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Device connect timed out", Toast.LENGTH_SHORT).show();
             finish();
         }
-     };
+    };
 
+    Runnable readVbatRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            vbatCharacteristic = fetchCharacteristic(VBAT_UUID);
+            mBluetoothLeService.readCharacteristic(vbatCharacteristic);
+
+            mHandler.postDelayed(readVbatRunnable, 10000);
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        initGui();
+        overridePendingTransition(R.anim.slidein, R.anim.fadeout);
 
         final Intent intent = getIntent();
-        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        String deviceString = intent.getStringExtra(EXTRAS_DEVICE);
+        if(deviceString.split("\n").length == 2)
+        {
+            mDeviceName = deviceString.split("\n")[0];
+            mDeviceAddress = deviceString.split("\n")[1];
+        }
+
+        initGui();
 
         //get bt le going
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
@@ -171,10 +218,27 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, new IntentFilter("Msg"));
 
         connectingDialog = new ProgressDialog(this);
-        connectingDialog.setMessage("Please wait while connecting to the device...");
+        connectingDialog.setMessage("Please wait while connecting to " + mDeviceName + "...");
         connectingDialog.setOnCancelListener(this);
         connectingDialog.setCancelable(true);
         connectingDialog.show();
+        mHandler.postDelayed(connectRunnable, 10000);
+    }
+
+    BluetoothGattCharacteristic fetchCharacteristic(String uuid)
+    {
+        BluetoothGattCharacteristic my_characteristic = null;
+        List<BluetoothGattService> gattServices = mBluetoothLeService.getSupportedGattServices();
+        for (BluetoothGattService service : gattServices) {
+            List<BluetoothGattCharacteristic> gattCharacteristics = service.getCharacteristics();
+            for (BluetoothGattCharacteristic characteristic : gattCharacteristics) {
+                if (characteristic.getUuid().toString().equals(uuid)) {
+                    my_characteristic = characteristic;
+                }
+            }
+        }
+
+        return my_characteristic;
     }
 
     void initGui()
@@ -196,28 +260,28 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             window.setStatusBarColor(getResources().getColor(R.color.action_bar_dark_blue));
         }
 
-        //set up fragment_example and fragments
+        //set up fragment_device and fragments
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
 
         final TabLayout.Tab color = tabLayout.newTab();
         final TabLayout.Tab frag = tabLayout.newTab();
 
-        View HomeView = getLayoutInflater().inflate(R.layout.custom_view,null);
-        ImageView iconHome = (ImageView) HomeView.findViewById(R.id.imageView);
-        iconHome.setImageResource(R.drawable.send_button);
+        View colorView = getLayoutInflater().inflate(R.layout.tab_view,null);
+        ImageView iconColor = (ImageView) colorView.findViewById(R.id.imageView);
+        iconColor.setImageResource(R.mipmap.ic_color_palette);
 
-        View InboxView = getLayoutInflater().inflate(R.layout.custom_view,null);
-        ImageView iconIn = (ImageView) InboxView.findViewById(R.id.imageView);
-        iconIn.setImageResource(R.drawable.send_button);
+        View editView = getLayoutInflater().inflate(R.layout.tab_view,null);
+        ImageView iconEdit = (ImageView) editView.findViewById(R.id.imageView);
+        iconEdit.setImageResource(R.mipmap.ic_edit);
 
-        color.setCustomView(HomeView);
-        frag.setCustomView(InboxView);
+        color.setCustomView(iconColor);
+        frag.setCustomView(iconEdit);
 
         tabLayout.addTab(color, 0);
         tabLayout.addTab(frag, 1);
 
-        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.action_button_dark_blue));
+        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.tab_indicator));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -238,6 +302,26 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         });
 
         colorPickerFragment = viewPagerAdapter.getColorPickerFragment();
+        deviceFragment = viewPagerAdapter.getDeviceFragment();
+
+        notificationEnableDialog = new AlertDialog.Builder(this);
+        notificationEnableDialog.setMessage("This app wants to enable notification access in the settings.")
+                .setPositiveButton("OK", notificationDialogClickListener).setNegativeButton("Cancel", notificationDialogClickListener).setCancelable(false);
+
+        saveAutoConnectDialog = new AlertDialog.Builder(this);
+        saveAutoConnectDialog.setMessage("Would you like to auto connect to " + mDeviceName + " from now on?")
+                .setPositiveButton("Yes", saveAutoConnectListener).setNegativeButton("No", saveAutoConnectListener).setCancelable(false);
+        View checkBoxView = View.inflate(this, R.layout.alert_dialog_checkbox, null);
+        CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mNeverAskChecked = isChecked;
+            }
+        });
+        checkBox.setText("Never ask again");
+        saveAutoConnectDialog.setView(checkBoxView);
     }
 
     // Code to manage Service lifecycle.
@@ -273,46 +357,113 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
+                mHandler.removeCallbacks(connectRunnable);
                 invalidateOptionsMenu();
                 connectingDialog.dismiss();
                 //start listening to notifications
                 startService(new Intent(MainActivity.this, NotificationService.class));
 
-                //TODO: SET INITIAL COLORS ON CONNECT
+                //notification service for detecting when new notifications are received
+                if(!NotificationService.notificationsBound)
+                {
+                    notificationEnableDialog.show();
+                }
 
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+                deviceFragment.setDevice(mDeviceName, mDeviceAddress);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                mNeverAsking = prefs.getBoolean(Preferences.PREFS_NEVER_ASK_KEY, false);
+                mAutoConnecting = prefs.getBoolean(Preferences.PREFS_AUTO_CONNECT_KEY, false);
+                if(!mNeverAsking && !mAutoConnecting)
+                    saveAutoConnectDialog.show();
+            }
+
+            else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 invalidateOptionsMenu();
                 Toast.makeText(getApplicationContext(), "You have lost connection to the device", Toast.LENGTH_SHORT).show();
                 if(!connectingDialog.isShowing())
                 {
-                    connectingDialog.setMessage("Please wait while reconnecting to the device...");
+                    connectingDialog.setMessage("Please wait while reconnecting to " + mDeviceName + "...");
                     connectingDialog.setCancelable(false);
                     connectingDialog.show();
-                    reconnectHandler.postDelayed(reconnectRunnable, 10000);
+                    mHandler.postDelayed(connectRunnable, 10000);
                 }
+            }
 
-            } else if (BluetoothLeService.ACTION_GATT_CONNECTING.equals(action)) {
+            else if (BluetoothLeService.ACTION_GATT_CONNECTING.equals(action)) {
                 mConnected = false;
                 invalidateOptionsMenu();
+            }
 
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                // Show all the supported services and characteristics on the user interface.
-                //manually set the characteristic we will be sending
+            else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                //read initial rgb color
+                colorCharacteristic = fetchCharacteristic(ANALOG_OUT_UUID);
+                mBluetoothLeService.readCharacteristic(colorCharacteristic);
 
-                List<BluetoothGattService> gattServices = mBluetoothLeService.getSupportedGattServices();
-                for (BluetoothGattService service : gattServices) {
-                    List<BluetoothGattCharacteristic> gattCharacteristics = service.getCharacteristics();
-                    for (BluetoothGattCharacteristic characteristic : gattCharacteristics) {
-                        if (characteristic.getUuid().toString().equals(ANALOG_ANALOG_OUT_UUID)) {
-                            myCharacteristic = characteristic;
-                        }
-                    }
-                }
+                //kick off reading battery
+                mHandler.postDelayed(readVbatRunnable, 10000);
+            }
+
+            else if(BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action))
+            {
+                String rxString = intent.getStringExtra(BluetoothLeService.EXTRA_DATA).split("\n")[0];
+                if(rxString.length() == 9 && initColors)    //we're reading rgb color values
+                    processColorData(rxString);
+                else if (rxString.length() < 9)             //we're reading vbat
+                    processVbatData(rxString);
             }
         }
     };
 
+    void processColorData(String rxString)
+    {
+        try {
+            String colorString = rxString;
+            int r = Integer.parseInt(colorString.substring(0, 3));
+            int g = Integer.parseInt(colorString.substring(3, 6));
+            int b = Integer.parseInt(colorString.substring(6, 9));
+            int colorValue = b;
+            colorValue += (g << 8);
+            colorValue += (r << 16);
+            colorValue &= 0xFF;
+            colorPickerFragment.initColors(colorValue);
+
+            initColors = false;
+        } catch (NumberFormatException e) {
+            Log.d(TAG, "Caught NumberFormatException while parsing rgb values");
+
+        }
+        //read first vbat value here so we don't need to wait 10 seconds
+        vbatCharacteristic = fetchCharacteristic(VBAT_UUID);
+        mBluetoothLeService.readCharacteristic(vbatCharacteristic);
+    }
+
+    void processVbatData(String rxString)
+    {
+        String vbatString = rxString;
+        //shift elements in array to right
+        for (int i = (mVbatArray.length - 1); i > 0; i--) {
+            mVbatArray[i] = mVbatArray[i-1];
+        }
+        //parse vbat
+        char vbatChar = vbatString.charAt(0);
+        mVbatArray[0] = (int)vbatChar;
+        int mAvgVbat = 0;
+        //calculate avg
+        int divideBy = 0;
+        for(int i = 0; i < mVbatArray.length - 1; i++)
+        {
+            if(!(mVbatArray[0] > mVbatArray[i] + 5) && !(mVbatArray[0] < mVbatArray[i]))
+            {
+                mAvgVbat += mVbatArray[i];
+                divideBy++;
+            }
+        }
+        mAvgVbat /= divideBy;
+
+        deviceFragment.updateBattery(mAvgVbat);
+    }
 
 
     // If a given GATT characteristic is selected, check for supported features.  This sample
@@ -336,9 +487,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
 
-                            myCharacteristic = characteristic;
-                            Log.w(TAG, myCharacteristic.toString());
-                            //mBluetoothLeService.writeCharacteristic(myCharacteristic, newValueText);
+                            colorCharacteristic = characteristic;
+                            Log.w(TAG, colorCharacteristic.toString());
+                            //mBluetoothLeService.writeCharacteristic(colorCharacteristic, newValueText);
                         }
                         if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
                             // If there is an active notification on a characteristic, clear
@@ -375,6 +526,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
+
+        overridePendingTransition(R.anim.fadein, R.anim.fade_and_scale_out);
     }
 
     @Override
@@ -382,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         super.onDestroy();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
+        mHandler.removeCallbacks(readVbatRunnable);
     }
 
     @Override
@@ -431,6 +585,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("Are you sure you want to disconnect from the device?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("Cancel", dialogClickListener).show();
                 }
+                return true;
+            case R.id.menu_settings:
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             case android.R.id.home:
                 stopService(new Intent(MainActivity.this, NotificationService.class));

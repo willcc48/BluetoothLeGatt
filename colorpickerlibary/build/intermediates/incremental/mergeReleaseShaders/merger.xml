@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="C:\Users\Will\Downloads\BluetoothLeGatt\colorpickerlibary\src\main\shaders"/></dataSet><dataSet config="release"><source path="C:\Users\Will\Downloads\BluetoothLeGatt\colorpickerlibary\src\release\shaders"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="C:\Users\Will\Downloads\BluetoothLeGatt\ColorPickerLibary\src\main\shaders"/></dataSet><dataSet config="release"><source path="C:\Users\Will\Downloads\BluetoothLeGatt\ColorPickerLibary\src\release\shaders"/></dataSet></merger>

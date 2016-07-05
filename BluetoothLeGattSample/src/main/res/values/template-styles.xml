@@ -30,7 +30,7 @@
 
     <style name="MyTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:actionMenuTextColor">@style/MyTheme.ActionBar.TitleTextStyle</item>
-        <!--<item name="android:background">@color/action_bar_light_blue</item>-->
+        <item name="android:background">@color/action_bar_light_blue</item>-->
         <item name="android:icon">@android:color/transparent</item>
     </style>
 

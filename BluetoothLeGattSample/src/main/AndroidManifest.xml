@@ -37,20 +37,24 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <application android:label="Vela"
+    <application android:label="Vela SmartNecklace"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.amti.vela.bluetoothlegatt.bluetooth.DeviceScanActivity"
-            android:label="Vela Interface"
+        <activity android:name=".bluetooth.DeviceScanActivity"
+            android:label="Vela SmartNecklace"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.amti.vela.bluetoothlegatt.MainActivity"
-            android:label="Color Selection" android:windowSoftInputMode="adjustPan|stateHidden" android:screenOrientation="portrait"/>
+
+        <activity android:name=".MainActivity"
+            android:label="Color Selection" android:screenOrientation="portrait"/>
+
+        <activity android:name=".SettingsActivity"
+            android:label="Settings" android:screenOrientation="portrait" />
 
         <service android:name="com.amti.vela.bluetoothlegatt.bluetooth.BluetoothLeService" android:enabled="true"/>
 

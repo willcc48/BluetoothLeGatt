@@ -17,20 +17,19 @@
 package com.amti.vela.bluetoothlegatt.bluetooth;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -44,7 +43,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amti.vela.bluetoothlegatt.CustomListAdapter;
-import com.amti.vela.bluetoothlegatt.NotificationService;
+import com.amti.vela.bluetoothlegatt.Preferences;
 import com.amti.vela.bluetoothlegatt.R;
 import com.amti.vela.bluetoothlegatt.MainActivity;
 
@@ -55,6 +54,7 @@ import java.util.ArrayList;
  */
 public class DeviceScanActivity extends AppCompatActivity {
     private final static String TAG = DeviceScanActivity.class.getSimpleName();
+
     private static final int REQUEST_ENABLE_BT = 1;
     private static final long SCAN_PERIOD = 10000; // Stops scanning after 10 seconds.
 
@@ -69,21 +69,6 @@ public class DeviceScanActivity extends AppCompatActivity {
 
     boolean disableActionButton = false;
 
-    DialogInterface.OnClickListener notificationDialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(DeviceScanActivity.this, "Some parts of this app will be disabled. You can manually enable this in the settings app under Notifications -> Notifiation Access", Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
-    };
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,36 +77,48 @@ public class DeviceScanActivity extends AppCompatActivity {
 
         initGui();
 
-        //if bt isn't compatible, tell them to take a hike
         btInit();
 
-        checkBtCompat();
+        if(isBtCompat())
+            autoConnectIfEnabled();
+    }
 
-        //startActivity(new Intent(DeviceScanActivity.this, MainActivity.class));
 
-        //notification service for detecting when new notifications are received
-        if(!NotificationService.notificationsBound)
+    void autoConnectIfEnabled()
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isAutoConnect = prefs.getBoolean(Preferences.PREFS_AUTO_CONNECT_KEY, false);
+        String deviceString = prefs.getString(Preferences.PREFS_DEVICE_KEY, "");
+        if(isAutoConnect && deviceString.split("\n").length == 2)
         {
-            AlertDialog.Builder notificationEnableDialog = new AlertDialog.Builder(this);
-            notificationEnableDialog.setMessage("This app wants to enable notification access in the settings.").setPositiveButton("OK", notificationDialogClickListener).setNegativeButton("Cancel", notificationDialogClickListener).show();
+            final Intent intent = new Intent(DeviceScanActivity.this, MainActivity.class);
+            intent.putExtra(MainActivity.EXTRAS_DEVICE, deviceString);
+            if (mScanning) {
+                scanLeDevice(false);
+                mScanning = false;
+            }
+            startActivity(intent);
         }
     }
 
-    void checkBtCompat()
+    boolean isBtCompat()
     {
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, "This device does not support bluetooth", Toast.LENGTH_SHORT).show();
             finish();
+            return false;
         }
 
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "This device does not support bluetooth", Toast.LENGTH_SHORT).show();
             finish();
-            return;
+            return false;
         }
+
+        return true;
     }
 
     void initGui()
@@ -164,7 +161,7 @@ public class DeviceScanActivity extends AppCompatActivity {
                 BluetoothDevice device = mLeDevicesList.get(position);
                 if (device == null) return;
                 final Intent intent = new Intent(DeviceScanActivity.this, MainActivity.class);
-                intent.putExtra(MainActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+                intent.putExtra(MainActivity.EXTRAS_DEVICE,  device.getName() + "\n" + device.getAddress());
                 if (mScanning) {
                     scanLeDevice(false);
                     mScanning = false;

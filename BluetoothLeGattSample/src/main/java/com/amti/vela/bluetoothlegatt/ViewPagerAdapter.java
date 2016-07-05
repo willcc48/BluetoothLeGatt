@@ -1,6 +1,5 @@
 package com.amti.vela.bluetoothlegatt;
 
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -8,12 +7,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     ColorPickerFragment colorPickerFragment;
-    TabFragment tabFragment;
+    DeviceFragment deviceFragment;
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
         colorPickerFragment = new ColorPickerFragment();
-        tabFragment = new TabFragment();
+        deviceFragment = new DeviceFragment();
     }
 
     @Override
@@ -23,12 +22,12 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return colorPickerFragment;
             case 1:
-                return tabFragment;
+                return deviceFragment;
         }
-        return new TabFragment();
+        return new DeviceFragment();
         // Which Fragment should be displayed by the viewpager for the given position
-        // In my case we are showing up only one fragment in all the three fragment_example so we are
-        // not worrying about the position and just returning the TabFragment
+        // In my case we are showing up only one fragment in all the three fragment_device so we are
+        // not worrying about the position and just returning the DeviceFragment
     }
 
     public ColorPickerFragment getColorPickerFragment()
@@ -36,9 +35,9 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         return colorPickerFragment;
     }
 
-    public TabFragment getTabFragment()
+    public DeviceFragment getDeviceFragment()
     {
-        return tabFragment;
+        return deviceFragment;
     }
 
     @Override
@@ -52,7 +51,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return "Choose a Color";
             case 1:
-                return "Fragment";
+                return "Device";
         }
         return "Default Text";
     }
