@@ -16,12 +16,12 @@
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\layout\\alert_dialog_checkbox.xml"
     },
     {
-        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple_overlay_action_mode.xml",
-        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
-    },
-    {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\layout\\design_layout_tab_text.xml",
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\layout\\design_layout_tab_text.xml"
+    },
+    {
+        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple_overlay_action_mode.xml",
+        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
     },
     {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_toolbar.xml",
@@ -98,6 +98,10 @@
     {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\layout\\design_layout_tab_icon.xml",
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\layout\\design_layout_tab_icon.xml"
+    },
+    {
+        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_dev.xml",
+        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\layout\\fragment_dev.xml"
     },
     {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_item_separator.xml",

@@ -8,11 +8,13 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     ColorPickerFragment colorPickerFragment;
     DeviceFragment deviceFragment;
+    DevFragment devFragment;
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
         colorPickerFragment = new ColorPickerFragment();
         deviceFragment = new DeviceFragment();
+        devFragment = new DevFragment();
     }
 
     @Override
@@ -23,6 +25,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return colorPickerFragment;
             case 1:
                 return deviceFragment;
+            case 2:
+                return devFragment;
         }
         return new DeviceFragment();
         // Which Fragment should be displayed by the viewpager for the given position
@@ -40,9 +44,14 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         return deviceFragment;
     }
 
+    public DevFragment getDevFragment()
+    {
+        return devFragment;
+    }
+
     @Override
     public int getCount() {
-        return 2;           // As there are only 2 Tabs
+        return 3;           // As there are only 2 Tabs
     }
 
     @Override
@@ -52,6 +61,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return "Choose a Color";
             case 1:
                 return "Device";
+            case 2:
+                return "Developer";
         }
         return "Default Text";
     }

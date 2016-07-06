@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     public static final String ANALOG_OUT_UUID = "866ad1ee-05c4-4f4e-9ef4-548790668ad1";
     public static final String VBAT_UUID = "982754c4-fbde-4d57-a01b-6c81f2f0499e";
 
+    public static final int SEND_COLOR_VALUES = 0;
+    public static final int SEND_DEP_VALUE = 1;
+
     private String mDeviceAddress = "Unknown Address";
     String mDeviceName = "Unknown Device";
     private BluetoothLeService mBluetoothLeService;
@@ -120,9 +123,13 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             // TODO Auto-generated method stub
             super.handleMessage(msg);
             switch (msg.what) {
-                case ColorPickerFragment.SEND_COLOR_VALUES:
+                case SEND_COLOR_VALUES:
                     mBluetoothLeService.writeCharacteristic(colorCharacteristic, colorPickerFragment.getColorString());
                     Log.v(TAG, "Wrote rgb values");
+                    break;
+                case SEND_DEP_VALUE:
+                    sendDEPValue((String)msg.obj);
+                    Log.v(TAG, "Wrote" + (String)msg.obj + "value");
                     break;
             }
         }
@@ -265,21 +272,28 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         viewPager.setAdapter(viewPagerAdapter);
 
         final TabLayout.Tab color = tabLayout.newTab();
-        final TabLayout.Tab frag = tabLayout.newTab();
+        final TabLayout.Tab device = tabLayout.newTab();
+        final TabLayout.Tab dev = tabLayout.newTab();
 
-        View colorView = getLayoutInflater().inflate(R.layout.tab_view,null);
+        View colorView = getLayoutInflater().inflate(R.layout.tab_view, null);
         ImageView iconColor = (ImageView) colorView.findViewById(R.id.imageView);
         iconColor.setImageResource(R.mipmap.ic_color_palette);
 
-        View editView = getLayoutInflater().inflate(R.layout.tab_view,null);
+        View editView = getLayoutInflater().inflate(R.layout.tab_view, null);
         ImageView iconEdit = (ImageView) editView.findViewById(R.id.imageView);
         iconEdit.setImageResource(R.mipmap.ic_edit);
 
+        View devView = getLayoutInflater().inflate(R.layout.tab_view, null);
+        ImageView iconDev = (ImageView) devView.findViewById(R.id.imageView);
+        iconDev.setImageResource(R.mipmap.ic_edit);
+
         color.setCustomView(iconColor);
-        frag.setCustomView(iconEdit);
+        device.setCustomView(iconEdit);
+        dev.setCustomView(iconDev);
 
         tabLayout.addTab(color, 0);
-        tabLayout.addTab(frag, 1);
+        tabLayout.addTab(device, 1);
+        tabLayout.addTab(dev, 2);
 
         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.tab_indicator));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -463,6 +477,12 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         mAvgVbat /= divideBy;
 
         deviceFragment.updateBattery(mAvgVbat);
+    }
+
+
+    void sendDEPValue(String val)
+    {
+        mBluetoothLeService.writeCharacteristic(colorCharacteristic, val);
     }
 
 

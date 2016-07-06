@@ -17,19 +17,15 @@ import com.larswerkman.holocolorpicker.ValueBar;
 public class ColorPickerFragment extends android.support.v4.app.Fragment implements ColorPicker.OnColorChangedListener,
         ColorPicker.OnTouchListener {
 
-    public static final int SEND_COLOR_VALUES = 0;
-
     ColorPicker mColorPicker;
     RelativeLayout relativeLayout;
     SaturationBar mSaturationBar;
+    int mPrevColor;
     ValueBar mValueBar;
 
     private final static int kFirstTimeColor = 0x0000ff;
     private int mSelectedColor;
-    private int mPrevSelectedColor;
     int r, g, b;
-
-    Button button;
 
     Handler btHandler;
     Handler sendHandler = new Handler();
@@ -38,7 +34,7 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
 
         @Override
         public void run() {
-            Message msg = btHandler.obtainMessage(SEND_COLOR_VALUES);
+            Message msg = btHandler.obtainMessage(MainActivity.SEND_COLOR_VALUES);
             btHandler.sendMessage(msg);
         }
     };
@@ -118,10 +114,11 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
         {
             sendHandler.removeCallbacksAndMessages(sendTimerRunnable);
             sendHandler.postDelayed(sendTimerRunnable, 500);
+            mColorPicker.setOldCenterColor(mSelectedColor);
         }
         else if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            mColorPicker.setOldCenterColor(mSelectedColor);
+            mPrevColor = mSelectedColor;
         }
         return false;
     }
