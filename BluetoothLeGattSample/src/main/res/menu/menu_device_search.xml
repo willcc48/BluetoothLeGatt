@@ -21,4 +21,9 @@
         app:showAsAction="always"
         android:title="Search for Devices"
         android:icon="@mipmap/ic_bluetooth_searching"/>
+
+    <item android:id="@+id/menu_settings"
+        android:title="Settings"
+        android:orderInCategory="200"
+        app:showAsAction="never" />
 </menu>

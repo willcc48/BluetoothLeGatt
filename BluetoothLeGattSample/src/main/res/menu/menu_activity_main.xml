@@ -25,7 +25,6 @@
     <item android:id="@+id/menu_settings"
         android:title="Settings"
         android:orderInCategory="200"
-        app:showAsAction="never"
-        android:icon="@mipmap/ic_bluetooth_connected" />
+        app:showAsAction="never" />
 
 </menu>

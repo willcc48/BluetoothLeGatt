@@ -60,7 +60,13 @@
         <activity
             android:name="com.amti.vela.bluetoothlegatt.SettingsActivity"
             android:label="Settings"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.amti.vela.bluetoothlegatt.SettingsActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name="com.amti.vela.bluetoothlegatt.bluetooth.BluetoothLeService"

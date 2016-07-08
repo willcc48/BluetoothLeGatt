@@ -6,9 +6,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
-import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
     static EditTextPreference device;
     static CheckBoxPreference autoConnect, neverAsk;
+    static Preference notificationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(getResources().getColor(R.color.action_bar_dark_blue));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.action_bar_dark_blue));
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -62,22 +65,33 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             device.setSummary(deviceString);
             device.setEnabled(autoConnect.isChecked());
         }
+
+        String title = NotificationService.notificationsBound ? "Enable notification access (enabled)" : "Enable notification access (disabled)";
+        notificationButton.setTitle(title);
     }
 
     public static class SettingsFragment extends PreferenceFragment {
         @Override
         public void onCreate(final Bundle savedInstanceState){
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.settings);
+            addPreferencesFromResource(R.xml.settings_items);
 
-            device = (EditTextPreference)findPreference("com.amti.vela.bluetooth.autoconnect.device");
-            autoConnect = (CheckBoxPreference)findPreference("com.amti.vela.bluetooth.autoconnect");
-            neverAsk = (CheckBoxPreference)findPreference("com.amti.vela.bluetooth.autoconnect.neverask");
+            device = (EditTextPreference)findPreference(Preferences.PREFS_DEVICE_KEY);
+            autoConnect = (CheckBoxPreference)findPreference(Preferences.PREFS_AUTO_CONNECT_KEY);
+            neverAsk = (CheckBoxPreference)findPreference(Preferences.PREFS_NEVER_ASK_KEY);
+            notificationButton = (Preference)findPreference(Preferences.PREFS_NOTIFICATION_KEY);
+
+            notificationButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                    return true;
+                }
+            });
 
             setSummaries();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,7 +102,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case android.R.id.home:
-                stopService(new Intent(SettingsActivity.this, NotificationService.class));
                 onBackPressed();
                 return true;
         }
@@ -98,6 +111,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     @Override
     protected void onResume() {
         super.onResume();
+        setSummaries();
     }
 
     @Override

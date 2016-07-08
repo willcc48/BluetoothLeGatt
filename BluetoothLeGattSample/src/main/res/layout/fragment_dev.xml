@@ -12,7 +12,7 @@
         android:id="@+id/checkBoxD"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:checked="false" />
+        android:checked="true" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
         android:layout_below="@+id/checkBoxD"
         android:layout_alignParentStart="true"
         android:layout_marginTop="24dp"
-        android:checked="false" />
+        android:checked="true" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -32,5 +32,5 @@
         android:layout_below="@+id/checkBoxE"
         android:layout_alignParentStart="true"
         android:layout_marginTop="24dp"
-        android:checked="false" />
+        android:checked="true" />
 </RelativeLayout>

@@ -78,27 +78,11 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
     int[] mVbatArray = new int[6];
 
-    AlertDialog.Builder notificationEnableDialog;
     AlertDialog.Builder saveAutoConnectDialog;
     boolean mNeverAskChecked;
 
     boolean mAutoConnecting;
     boolean mNeverAsking;
-
-    DialogInterface.OnClickListener notificationDialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(MainActivity.this, "Some parts of this app will be disabled. You can manually enable this in the settings app under Notifications -> Notifiation Access", Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
-    };
 
     DialogInterface.OnClickListener saveAutoConnectListener = new DialogInterface.OnClickListener() {
         @Override
@@ -188,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         @Override
         public void run() {
             Toast.makeText(getApplicationContext(), "Device connect timed out", Toast.LENGTH_SHORT).show();
+            stopService(new Intent(MainActivity.this, NotificationService.class));
             finish();
         }
     };
@@ -264,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(getResources().getColor(R.color.action_bar_dark_blue));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.action_bar_dark_blue));
         }
 
         //set up fragment_device and fragments
@@ -318,10 +303,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         colorPickerFragment = viewPagerAdapter.getColorPickerFragment();
         deviceFragment = viewPagerAdapter.getDeviceFragment();
 
-        notificationEnableDialog = new AlertDialog.Builder(this);
-        notificationEnableDialog.setMessage("This app wants to enable notification access in the settings.")
-                .setPositiveButton("OK", notificationDialogClickListener).setNegativeButton("Cancel", notificationDialogClickListener).setCancelable(false);
-
         saveAutoConnectDialog = new AlertDialog.Builder(this);
         saveAutoConnectDialog.setMessage("Would you like to auto connect to " + mDeviceName + " from now on?")
                 .setPositiveButton("Yes", saveAutoConnectListener).setNegativeButton("No", saveAutoConnectListener).setCancelable(false);
@@ -346,6 +327,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
                 Log.e(TAG, "Unable to initialize Bluetooth");
+                stopService(new Intent(MainActivity.this, NotificationService.class));
+                mHandler.removeCallbacksAndMessages(connectRunnable);
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
@@ -374,14 +357,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 mHandler.removeCallbacks(connectRunnable);
                 invalidateOptionsMenu();
                 connectingDialog.dismiss();
-                //start listening to notifications
-                startService(new Intent(MainActivity.this, NotificationService.class));
-
-                //notification service for detecting when new notifications are received
-                if(!NotificationService.notificationsBound)
-                {
-                    notificationEnableDialog.show();
-                }
 
                 deviceFragment.setDevice(mDeviceName, mDeviceAddress);
 
@@ -562,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_main, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            menu.findItem(R.id.menu_bt).getIcon().setTint(getResources().getColor(R.color.action_button_dark_blue));
+            menu.findItem(R.id.menu_bt).getIcon().setTint(ContextCompat.getColor(this, R.color.action_button_dark_blue));
         }
         if (mConnected) {
             menu.findItem(R.id.menu_bt).setTitle("Disconnect");
@@ -583,6 +558,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
                 case DialogInterface.BUTTON_POSITIVE:
                     mBluetoothLeService.disconnect();
                     stopService(new Intent(MainActivity.this, NotificationService.class));
+                    mHandler.removeCallbacksAndMessages(connectRunnable);
                     finish();
                     break;
 
@@ -631,6 +607,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     public void onCancel(DialogInterface dialog) {
         stopService(new Intent(MainActivity.this, NotificationService.class));
+        mHandler.removeCallbacksAndMessages(connectRunnable);
         finish();
     }
 

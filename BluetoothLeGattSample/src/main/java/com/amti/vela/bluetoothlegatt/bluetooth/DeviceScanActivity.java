@@ -16,12 +16,15 @@
 
 package com.amti.vela.bluetoothlegatt.bluetooth;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,9 +47,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amti.vela.bluetoothlegatt.CustomListAdapter;
+import com.amti.vela.bluetoothlegatt.NotificationService;
 import com.amti.vela.bluetoothlegatt.Preferences;
 import com.amti.vela.bluetoothlegatt.R;
 import com.amti.vela.bluetoothlegatt.MainActivity;
+import com.amti.vela.bluetoothlegatt.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -58,6 +64,8 @@ public class DeviceScanActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final long SCAN_PERIOD = 10000; // Stops scanning after 10 seconds.
 
+    public static final String NOTIFICATION_SETTINGS_PACKAGE = "android.settings_items.ACTION_NOTIFICATION_LISTENER_SETTINGS";
+
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mScanning;
     private Handler leScanHandler;
@@ -69,18 +77,50 @@ public class DeviceScanActivity extends AppCompatActivity {
 
     boolean disableActionButton = false;
 
+    boolean enableBtFlag;
+    boolean checkedBt;
+
+    AlertDialog.Builder notificationEnableDialog;
+
+    DialogInterface.OnClickListener notificationDialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    startActivity(new Intent(NOTIFICATION_SETTINGS_PACKAGE));
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(DeviceScanActivity.this, "Some parts of this app will be disabled. You can manually enable this in the settings app under Notifications -> Notifiation Access", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_search);
 
+        //have to request location permissions for marshmallow to do bluetooth
+        if(Build.VERSION.SDK_INT >= 23)
+        {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+
+            }
+            else
+            {
+
+            }
+        }
+
         initGui();
 
         btInit();
 
-        if(isBtCompat())
-            autoConnectIfEnabled();
+        autoConnectIfEnabled();
     }
 
 
@@ -89,7 +129,7 @@ public class DeviceScanActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isAutoConnect = prefs.getBoolean(Preferences.PREFS_AUTO_CONNECT_KEY, false);
         String deviceString = prefs.getString(Preferences.PREFS_DEVICE_KEY, "");
-        if(isAutoConnect && deviceString.split("\n").length == 2)
+        if(isAutoConnect && deviceString.split("\n").length == 2 && mBluetoothAdapter.isEnabled())
         {
             final Intent intent = new Intent(DeviceScanActivity.this, MainActivity.class);
             intent.putExtra(MainActivity.EXTRAS_DEVICE, deviceString);
@@ -97,8 +137,21 @@ public class DeviceScanActivity extends AppCompatActivity {
                 scanLeDevice(false);
                 mScanning = false;
             }
-            startActivity(intent);
+            if(notificationListenerInit());
+                startActivity(intent);
         }
+    }
+
+    boolean notificationListenerInit()
+    {
+        //start listening to notifications
+        startService(new Intent(DeviceScanActivity.this, NotificationService.class));
+        //notification service for detecting when new notifications are received
+        if(!NotificationService.notificationsBound)
+        {
+            notificationEnableDialog.show();
+        }
+        return NotificationService.notificationsBound;
     }
 
     boolean isBtCompat()
@@ -139,17 +192,22 @@ public class DeviceScanActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        notificationEnableDialog = new AlertDialog.Builder(this);
+        notificationEnableDialog.setMessage("This app wants to enable notification access in the settings app.")
+                .setPositiveButton("OK", notificationDialogClickListener).setNegativeButton("Cancel", notificationDialogClickListener).setCancelable(false);
+
         //action bar
         Toolbar actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);
         actionBarToolBar.setTitle("Choose a Device");
+        actionBarToolBar.setTitleTextColor(ContextCompat.getColor(this, R.color.action_bar_text_gray));
 
         //status bar color
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(getResources().getColor(R.color.action_bar_dark_blue));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.action_bar_dark_blue));
         }
 
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -161,12 +219,14 @@ public class DeviceScanActivity extends AppCompatActivity {
                 BluetoothDevice device = mLeDevicesList.get(position);
                 if (device == null) return;
                 final Intent intent = new Intent(DeviceScanActivity.this, MainActivity.class);
-                intent.putExtra(MainActivity.EXTRAS_DEVICE,  device.getName() + "\n" + device.getAddress());
+                String deviceName = device.getName().equals("null") ? "Unknown Device" : device.getName();
+                intent.putExtra(MainActivity.EXTRAS_DEVICE,  deviceName + "\n" + device.getAddress());
                 if (mScanning) {
                     scanLeDevice(false);
                     mScanning = false;
                 }
-                startActivity(intent);
+                if(notificationListenerInit());
+                    startActivity(intent);
             }
         });
 
@@ -218,39 +278,43 @@ public class DeviceScanActivity extends AppCompatActivity {
     }
 
     private void scanLeDevice(final boolean enable) {
-        //start scanning
-        if (enable)
+        //pentuple check bt
+        if(!enableBtIfNeeded())
         {
-            // this handler stops the scan after a period of time.
-            leScanHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    disableActionButton = false;
-                    setSwipeContainerRefresh(false);
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    Log.e(TAG, "Stopped scan");
-                    invalidateOptionsMenu();
-                }
-            }, SCAN_PERIOD);
+            //start scanning
+            if (enable)
+            {
+                // this handler stops the scan after a period of time.
+                leScanHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScanning = false;
+                        disableActionButton = false;
+                        setSwipeContainerRefresh(false);
+                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                        Log.e(TAG, "Stopped scan");
+                        invalidateOptionsMenu();
+                    }
+                }, SCAN_PERIOD);
 
-            mScanning = true;
-            disableActionButton = true;
-            setSwipeContainerRefresh(true);
-            boolean started = mBluetoothAdapter.startLeScan(mLeScanCallback);
-            Log.e(TAG, "Started scan");
-        }
+                mScanning = true;
+                disableActionButton = true;
+                setSwipeContainerRefresh(true);
+                mBluetoothAdapter.startLeScan(mLeScanCallback);
+                Log.e(TAG, "Started scan");
+            }
 
-        //stop scanning
-        else
-        {
-            mScanning = false;
-            disableActionButton = false;
-            setSwipeContainerRefresh(false);
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            Log.e(TAG, "Stopped scan");
+            //stop scanning
+            else
+            {
+                mScanning = false;
+                disableActionButton = false;
+                setSwipeContainerRefresh(false);
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                Log.e(TAG, "Stopped scan");
+            }
+            invalidateOptionsMenu();
         }
-        invalidateOptionsMenu();
     }
 
     // Device scan callback.
@@ -293,8 +357,10 @@ public class DeviceScanActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_device_search, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            menu.findItem(R.id.menu_search).getIcon().setTint(getResources().getColor(R.color.action_button_dark_blue));
+            menu.findItem(R.id.menu_search).getIcon().setTint(ContextCompat.getColor(this, R.color.action_button_dark_blue));
         }
+
+
         if(!mScanning)
         {
             swipeContainer.setRefreshing(false);
@@ -314,6 +380,10 @@ public class DeviceScanActivity extends AppCompatActivity {
                 devicesAdapter.clear();
                 scanLeDevice(true);
                 return true;
+            case R.id.menu_settings:
+                Intent intent = new Intent(DeviceScanActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
         }
         return true;
     }
@@ -328,27 +398,52 @@ public class DeviceScanActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter.isEnabled()) {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }
-
         clearDevices();
-        scanLeDevice(true);
+
+        if(!checkedBt)
+            scanLeDevice(true);
+        else
+        {
+            scanLeDevice(false);
+            checkedBt = false;
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        enableBtFlag = false;
         // User chose not to enable Bluetooth.
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
-            finish();
-            return;
+
         }
+        else if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_OK) {
+            if(isBtCompat())
+                autoConnectIfEnabled();
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    boolean enableBtIfNeeded()
+    {
+        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
+        // fire an intent to display a dialog asking the user to grant permission to enable it.
+        if (!mBluetoothAdapter.isEnabled()) {
+            //we have enableBtFlag so that we know if we already have one of these dialogs showing
+            if (!mBluetoothAdapter.isEnabled() && !enableBtFlag) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                enableBtFlag = true;
+                //checkedBt is for when onResume is called when we get back from the enable bt dialog, the user has
+                //to manually start the bt search
+                checkedBt = true;
+            }
+        }
+        return enableBtFlag;
+    }
 }

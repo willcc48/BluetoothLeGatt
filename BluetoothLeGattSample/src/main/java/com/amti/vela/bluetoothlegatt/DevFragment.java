@@ -56,6 +56,10 @@ public class DevFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        checkD.setChecked(true);
+        checkE.setChecked(true);
+        checkP.setChecked(true);
+
         return relativeLayout;
     }
 

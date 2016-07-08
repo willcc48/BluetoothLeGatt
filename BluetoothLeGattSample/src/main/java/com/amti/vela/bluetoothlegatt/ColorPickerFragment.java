@@ -113,7 +113,7 @@ public class ColorPickerFragment extends android.support.v4.app.Fragment impleme
         if(event.getAction() == MotionEvent.ACTION_UP)
         {
             sendHandler.removeCallbacksAndMessages(sendTimerRunnable);
-            sendHandler.postDelayed(sendTimerRunnable, 500);
+            sendHandler.postDelayed(sendTimerRunnable, 100);
             mColorPicker.setOldCenterColor(mSelectedColor);
         }
         else if (event.getAction() == MotionEvent.ACTION_DOWN)
