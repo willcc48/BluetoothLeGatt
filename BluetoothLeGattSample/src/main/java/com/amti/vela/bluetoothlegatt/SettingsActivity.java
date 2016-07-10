@@ -105,6 +105,9 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 onBackPressed();
                 return true;
         }
+
+        int a;
+
         return super.onOptionsItemSelected(item);
     }
 
