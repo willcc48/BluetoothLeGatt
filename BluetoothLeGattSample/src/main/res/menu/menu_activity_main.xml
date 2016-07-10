@@ -20,7 +20,7 @@
         android:title="Connecting"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:icon="@mipmap/ic_bluetooth_connected" />
+        android:icon="@mipmap/ic_bluetooth_connected_white" />
 
     <item android:id="@+id/menu_settings"
         android:title="Settings"

@@ -20,7 +20,7 @@
         android:orderInCategory="1"
         app:showAsAction="always"
         android:title="Search for Devices"
-        android:icon="@mipmap/ic_bluetooth_searching"/>
+        android:icon="@mipmap/ic_bluetooth_searching_white"/>
 
     <item android:id="@+id/menu_settings"
         android:title="Settings"

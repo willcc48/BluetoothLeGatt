@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         setSupportActionBar(actionBarToolBar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBarToolBar.setTitleTextColor(ContextCompat.getColor(this, R.color.action_bar_text_gray));
 
         //status bar color
         Window window = getWindow();
@@ -262,11 +263,11 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         View colorView = getLayoutInflater().inflate(R.layout.tab_view, null);
         ImageView iconColor = (ImageView) colorView.findViewById(R.id.imageView);
-        iconColor.setImageResource(R.mipmap.ic_color_palette);
+        iconColor.setImageResource(R.mipmap.ic_color_palette_white);
 
         View editView = getLayoutInflater().inflate(R.layout.tab_view, null);
         ImageView iconEdit = (ImageView) editView.findViewById(R.id.imageView);
-        iconEdit.setImageResource(R.mipmap.ic_edit);
+        iconEdit.setImageResource(R.mipmap.ic_battery_std_white);
 
         View devView = getLayoutInflater().inflate(R.layout.tab_view, null);
         ImageView iconDev = (ImageView) devView.findViewById(R.id.imageView);
@@ -541,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         }
         if (mConnected) {
             menu.findItem(R.id.menu_bt).setTitle("Disconnect");
-            menu.findItem(R.id.menu_bt).setIcon(R.mipmap.ic_bluetooth_connected);
+            menu.findItem(R.id.menu_bt).setIcon(R.mipmap.ic_bluetooth_connected_white);
             menu.findItem(R.id.menu_bt).setVisible(true);
         } else {
             menu.findItem(R.id.menu_bt).setVisible(false);

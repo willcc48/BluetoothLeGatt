@@ -301,6 +301,7 @@
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>
     <style name="Animation.AppCompat.DropDownUp" parent="Base.Animation.AppCompat.DropDownUp"/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorSecondary">@color/action_bar_text_gray</item>
         <!--
         <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
         <item name="actionBarTheme">@style/ThemeOverlay.AppTheme.ActionBar</item>
