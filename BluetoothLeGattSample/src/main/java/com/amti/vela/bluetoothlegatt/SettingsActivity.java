@@ -106,8 +106,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 return true;
         }
 
-        int a;
-
         return super.onOptionsItemSelected(item);
     }
 
