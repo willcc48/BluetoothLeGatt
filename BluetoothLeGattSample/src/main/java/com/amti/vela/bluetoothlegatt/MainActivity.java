@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         View devView = getLayoutInflater().inflate(R.layout.tab_view, null);
         ImageView iconDev = (ImageView) devView.findViewById(R.id.imageView);
-        iconDev.setImageResource(R.mipmap.ic_edit);
+        iconDev.setImageResource(R.mipmap.ic_developer_white);
 
         color.setCustomView(iconColor);
         device.setCustomView(iconEdit);
@@ -398,6 +398,8 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             else if(BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action))
             {
                 String rxString = intent.getStringExtra(BluetoothLeService.EXTRA_DATA).split("\n")[0];
+                if(rxString.isEmpty())
+                    return;
                 if(rxString.length() == 9 && initColors)    //we're reading rgb color values
                     processColorData(rxString);
                 else if (rxString.length() < 9)             //we're reading vbat

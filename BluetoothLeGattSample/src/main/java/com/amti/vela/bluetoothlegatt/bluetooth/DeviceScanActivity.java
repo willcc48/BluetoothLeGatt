@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -64,7 +65,7 @@ public class DeviceScanActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final long SCAN_PERIOD = 10000; // Stops scanning after 10 seconds.
 
-    public static final String NOTIFICATION_SETTINGS_PACKAGE = "android.settings_items.ACTION_NOTIFICATION_LISTENER_SETTINGS";
+    public static final String NOTIFICATION_SETTINGS_PACKAGE = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mScanning;
@@ -87,11 +88,17 @@ public class DeviceScanActivity extends AppCompatActivity {
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
-                    startActivity(new Intent(NOTIFICATION_SETTINGS_PACKAGE));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                    }
+                    else
+                    {
+                        startActivity(new Intent(NOTIFICATION_SETTINGS_PACKAGE));
+                    }
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(DeviceScanActivity.this, "Some parts of this app will be disabled. You can manually enable this in the settings app under Notifications -> Notifiation Access", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DeviceScanActivity.this, "Some parts of this app will be disabled. You can manually enable this in the settings app under Notifications -> Notification Access", Toast.LENGTH_LONG).show();
                     break;
             }
         }

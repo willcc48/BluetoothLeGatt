@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.amti.vela.bluetoothlegatt.bluetooth.DeviceScanActivity;
+
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     static SharedPreferences prefs;
@@ -79,12 +81,18 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             device = (EditTextPreference)findPreference(Preferences.PREFS_DEVICE_KEY);
             autoConnect = (CheckBoxPreference)findPreference(Preferences.PREFS_AUTO_CONNECT_KEY);
             neverAsk = (CheckBoxPreference)findPreference(Preferences.PREFS_NEVER_ASK_KEY);
-            notificationButton = (Preference)findPreference(Preferences.PREFS_NOTIFICATION_KEY);
+            notificationButton = findPreference(Preferences.PREFS_NOTIFICATION_KEY);
 
             notificationButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                    }
+                    else
+                    {
+                        startActivity(new Intent(DeviceScanActivity.NOTIFICATION_SETTINGS_PACKAGE));
+                    }
                     return true;
                 }
             });
