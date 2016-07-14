@@ -62,7 +62,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     public static void setSummaries()
     {
         String deviceString = prefs.getString(Preferences.PREFS_DEVICE_KEY, "");
-        if(!device.equals(null))
+        if(device != null)
         {
             device.setSummary(deviceString);
             device.setEnabled(autoConnect.isChecked());
@@ -120,6 +120,8 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     @Override
     protected void onResume() {
         super.onResume();
+        stopService(new Intent(SettingsActivity.this, NotificationService.class));
+        startService(new Intent(SettingsActivity.this, NotificationService.class));
         setSummaries();
     }
 

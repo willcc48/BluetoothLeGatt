@@ -101,24 +101,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         }
     };
 
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(final Message msg) {
-            // TODO Auto-generated method stub
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SEND_COLOR_VALUES:
-                    mBluetoothLeService.writeCharacteristic(colorCharacteristic, colorPickerFragment.getColorString());
-                    Log.v(TAG, "Wrote rgb values");
-                    break;
-                case SEND_DEP_VALUE:
-                    sendDEPValue((String)msg.obj);
-                    Log.v(TAG, "Wrote" + (String)msg.obj + "value");
-                    break;
-            }
-        }
-    };
-
+    Handler mHandler;
     public Handler getBtHandler()
     {
         return mHandler;
@@ -171,9 +154,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "Device connect timed out", Toast.LENGTH_SHORT).show();
             stopService(new Intent(MainActivity.this, NotificationService.class));
             finish();
+            Toast.makeText(getApplicationContext(), "Device connect timed out", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -203,6 +186,24 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         }
 
         initGui();
+
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(final Message msg) {
+                // TODO Auto-generated method stub
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case SEND_COLOR_VALUES:
+                        mBluetoothLeService.writeCharacteristic(colorCharacteristic, colorPickerFragment.getColorString());
+                        Log.v(TAG, "Wrote rgb values");
+                        break;
+                    case SEND_DEP_VALUE:
+                        sendDEPValue((String)msg.obj);
+                        Log.v(TAG, "Wrote" + (String)msg.obj + "value");
+                        break;
+                }
+            }
+        };
 
         //get bt le going
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
@@ -270,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         iconEdit.setImageResource(R.mipmap.ic_battery_std_white);
 
         View devView = getLayoutInflater().inflate(R.layout.tab_view, null);
-        ImageView iconDev = (ImageView) devView.findViewById(R.id.imageView);
+        final ImageView iconDev = (ImageView) devView.findViewById(R.id.imageView);
         iconDev.setImageResource(R.mipmap.ic_developer_white);
 
         color.setCustomView(iconColor);
@@ -371,9 +372,9 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 invalidateOptionsMenu();
-                Toast.makeText(getApplicationContext(), "You have lost connection to the device", Toast.LENGTH_SHORT).show();
                 if(!connectingDialog.isShowing())
                 {
+                    Toast.makeText(getApplicationContext(), "You have lost connection to the device", Toast.LENGTH_SHORT).show();
                     connectingDialog.setMessage("Please wait while reconnecting to " + mDeviceName + "...");
                     connectingDialog.setCancelable(false);
                     connectingDialog.show();
@@ -534,13 +535,14 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
         mHandler.removeCallbacks(readVbatRunnable);
+        mHandler.removeCallbacks(connectRunnable);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_main, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            menu.findItem(R.id.menu_bt).getIcon().setTint(ContextCompat.getColor(this, R.color.action_button_dark_blue));
+            //menu.findItem(R.id.menu_bt).getIcon().setTint(ContextCompat.getColor(this, R.color.action_button_dark_blue));
         }
         if (mConnected) {
             menu.findItem(R.id.menu_bt).setTitle("Disconnect");
@@ -610,7 +612,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     public void onCancel(DialogInterface dialog) {
         stopService(new Intent(MainActivity.this, NotificationService.class));
-        mHandler.removeCallbacksAndMessages(connectRunnable);
         finish();
     }
 

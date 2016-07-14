@@ -199,7 +199,7 @@ public class DeviceScanActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        notificationEnableDialog = new AlertDialog.Builder(this);
+        notificationEnableDialog = new AlertDialog.Builder(DeviceScanActivity.this);
         notificationEnableDialog.setMessage("This app wants to enable notification access in the settings app.")
                 .setPositiveButton("OK", notificationDialogClickListener).setNegativeButton("Cancel", notificationDialogClickListener).setCancelable(false);
 
@@ -226,7 +226,7 @@ public class DeviceScanActivity extends AppCompatActivity {
                 BluetoothDevice device = mLeDevicesList.get(position);
                 if (device == null) return;
                 final Intent intent = new Intent(DeviceScanActivity.this, MainActivity.class);
-                String deviceName = device.getName().equals("null") ? "Unknown Device" : device.getName();
+                String deviceName = device.getName() == null ? "Unknown Device" : device.getName();
                 intent.putExtra(MainActivity.EXTRAS_DEVICE,  deviceName + "\n" + device.getAddress());
                 if (mScanning) {
                     scanLeDevice(false);
@@ -364,7 +364,7 @@ public class DeviceScanActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_device_search, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            menu.findItem(R.id.menu_search).getIcon().setTint(ContextCompat.getColor(this, R.color.action_button_dark_blue));
+            //menu.findItem(R.id.menu_search).getIcon().setTint(ContextCompat.getColor(this, R.color.action_button_dark_blue));
         }
 
 

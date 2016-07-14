@@ -27,7 +27,7 @@
         <Preference
             android:title="Enable notification access"
             android:key="com.amti.vela.notification"
-            android:summary="Allows this app to tell your necklace when you get a notification" >
+            android:summary="Allows this app to tell your necklace when you get a notification. After changing this setting, you may need to restart the app for it to apply." >
             <intent android:action="android.intent.action.VIEW"
                 android:targetPackage="android.provider.Settings"
                 android:targetClass="android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"/>

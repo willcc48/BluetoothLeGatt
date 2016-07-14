@@ -826,8 +826,9 @@ int mipmap ic_bluetooth_searching 0x7f030003
 int mipmap ic_bluetooth_searching_white 0x7f030004
 int mipmap ic_color_palette 0x7f030005
 int mipmap ic_color_palette_white 0x7f030006
-int mipmap ic_edit 0x7f030007
-int mipmap ic_launcher 0x7f030008
+int mipmap ic_developer_white 0x7f030007
+int mipmap ic_edit 0x7f030008
+int mipmap ic_launcher 0x7f030009
 int string abc_action_bar_home_description 0x7f070000
 int string abc_action_bar_home_description_format 0x7f070001
 int string abc_action_bar_home_subtitle_description_format 0x7f070002

@@ -4,6 +4,10 @@
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-hdpi\\ic_edit.png"
     },
     {
+        "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_developer_white.png",
+        "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-hdpi\\ic_developer_white.png"
+    },
+    {
         "merged": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_bluetooth_searching.png",
         "source": "C:\\Users\\Will\\Downloads\\BluetoothLeGatt\\BluetoothLeGattSample\\src\\main\\res\\mipmap-hdpi\\ic_bluetooth_searching.png"
     },
